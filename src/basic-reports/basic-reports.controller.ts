@@ -1,6 +1,7 @@
-import { Controller, Get, HttpStatus } from '@nestjs/common';
+import { Controller, Get, HttpStatus, Res } from '@nestjs/common';
 import { BasicReportsService } from './basic-reports.service';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Response } from 'express';
 
 @ApiTags('Basic Reports')
 @Controller('basic-reports')
@@ -10,9 +11,14 @@ export class BasicReportsController {
   @Get()
   @ApiResponse({
     status: HttpStatus.OK,
-    description: 'Get all employees',
+    description: 'Return pdf file with hello world content',
   })
-  public async findAll() {
-    return this.basicReportsService.findAll();
+  public async generatePdf(@Res() response: Response) {
+    const pdfDoc = this.basicReportsService.generatePdf();
+
+    response.setHeader('Content-Type', 'application/pdf');
+    pdfDoc.info.Title = 'Hello World';
+    pdfDoc.pipe(response);
+    pdfDoc.end();
   }
 }
