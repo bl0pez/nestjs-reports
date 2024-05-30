@@ -21,4 +21,18 @@ export class BasicReportsController {
     pdfDoc.pipe(response);
     pdfDoc.end();
   }
+
+  @Get('employment-letter')
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Return pdf file with employment letter content',
+  })
+  public async employmentLetter(@Res() response: Response) {
+    const pdfDoc = this.basicReportsService.employmentLetter();
+
+    response.setHeader('Content-Type', 'application/pdf');
+    pdfDoc.info.Title = 'Employment Letter';
+    pdfDoc.pipe(response);
+    pdfDoc.end();
+  }
 }
