@@ -1,4 +1,4 @@
-import { Controller, Get, HttpStatus, Res } from '@nestjs/common';
+import { Controller, Get, HttpStatus, Param, Res } from '@nestjs/common';
 import { BasicReportsService } from './basic-reports.service';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
@@ -29,6 +29,29 @@ export class BasicReportsController {
   })
   public async employmentLetter(@Res() response: Response) {
     const pdfDoc = this.basicReportsService.employmentLetter();
+
+    response.setHeader('Content-Type', 'application/pdf');
+    response.setHeader(
+      'Content-Disposition',
+      'inline; filename=employment-letter.pdf',
+    );
+    pdfDoc.info.Title = 'Employment Letter';
+    pdfDoc.pipe(response);
+    pdfDoc.end();
+  }
+
+  @Get('employment-letter/:employeeId')
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description:
+      'Return pdf file with employment letter content by employee id',
+  })
+  public async employmentLetterByID(
+    @Res() response: Response,
+    @Param('employeeId') employeeId: string,
+  ) {
+    const pdfDoc =
+      await this.basicReportsService.employmentLetterById(+employeeId);
 
     response.setHeader('Content-Type', 'application/pdf');
     pdfDoc.info.Title = 'Employment Letter';
