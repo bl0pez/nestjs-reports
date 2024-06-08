@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrinterService } from 'src/printer/printer.service';
 import { PrismaService } from 'src/prisma/prisma.service';
 import {
+  getCountriesReport,
   getEmploymentLetterByIdReport,
   getHelloWorldReport,
 } from 'src/reports';
@@ -56,6 +57,14 @@ export class BasicReportsService {
         employeeWorkSchedule: employee.work_schedule,
         employerCompany: 'Tucan Code Corp.',
       }),
+    });
+
+    return doc;
+  }
+
+  public async generateCountriesReport() {
+    const doc = this.printerService.createPdf({
+      docDefinitions: getCountriesReport(),
     });
 
     return doc;

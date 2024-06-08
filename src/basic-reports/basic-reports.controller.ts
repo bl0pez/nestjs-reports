@@ -58,4 +58,18 @@ export class BasicReportsController {
     pdfDoc.pipe(response);
     pdfDoc.end();
   }
+
+  @Get('countries-report')
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Return pdf file with countries report content',
+  })
+  public async getCountriesReport(@Res() response: Response) {
+    const pdfDoc = await this.basicReportsService.generateCountriesReport();
+
+    response.setHeader('Content-Type', 'application/pdf');
+    pdfDoc.info.Title = 'Countries Report';
+    pdfDoc.pipe(response);
+    pdfDoc.end();
+  }
 }

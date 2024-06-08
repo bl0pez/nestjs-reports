@@ -19,13 +19,29 @@ const logo: Content = {
 const currentDate: Content = {
   text: DateFormatter.getDDMMMMYYYY(new Date()),
   alignment: 'right',
-  margin: [20, 20],
+  margin: [20, 30],
+  width: 150,
 };
 
 const contentTitle = (title: string): Content => {
   return {
     text: title,
+    alignment: 'center',
+    margin: [0, 15, 0, 0],
     style: {
+      bold: true,
+      fontSize: 22,
+    },
+  };
+};
+
+const contentSubtitle = (subtitle: string): Content => {
+  return {
+    text: subtitle,
+    alignment: 'center',
+    margin: [0, 2, 0, 0],
+    style: {
+      fontSize: 16,
       bold: true,
     },
   };
@@ -37,8 +53,13 @@ export const headerSection = (options: HeaderOptions): Content => {
   const headerLogo = showLogo ? logo : null;
   const headerCurrentDate = showCurrentDate ? currentDate : null;
   const headerTitle = title ? contentTitle(title) : null;
+  const headerSubtitle = subtitle ? contentSubtitle(subtitle) : null;
+
+  const headerStack: Content = {
+    stack: [headerTitle, headerSubtitle],
+  };
 
   return {
-    columns: [headerLogo, headerTitle, headerCurrentDate],
+    columns: [headerLogo, headerStack, headerCurrentDate],
   };
 };
