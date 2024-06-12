@@ -63,8 +63,18 @@ export class BasicReportsService {
   }
 
   public async generateCountriesReport() {
+    const countries = await this.prismaService.countries.findMany({
+      where: {
+        local_name: {
+          not: null,
+        },
+      },
+    });
+
     const doc = this.printerService.createPdf({
-      docDefinitions: getCountriesReport(),
+      docDefinitions: getCountriesReport({
+        countries,
+      }),
     });
 
     return doc;

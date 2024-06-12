@@ -1,12 +1,23 @@
+import { countries as Country } from '@prisma/client';
 import type { TDocumentDefinitions } from 'pdfmake/interfaces';
 import { headerSection } from 'src/sections/header.section';
 
-export const getCountriesReport = (): TDocumentDefinitions => {
+interface ReportOptions {
+  title?: string;
+  subTitle?: string;
+  countries: Country[];
+}
+
+export const getCountriesReport = ({
+  title,
+  subTitle,
+  countries,
+}: ReportOptions): TDocumentDefinitions => {
   return {
     pageOrientation: 'landscape',
     header: headerSection({
-      title: 'Countries Report',
-      subtitle: 'List of countries',
+      title: title || 'Countries Report',
+      subtitle: subTitle || 'List of countries',
     }),
     pageMargins: [40, 110, 40, 60],
     content: [
@@ -14,11 +25,19 @@ export const getCountriesReport = (): TDocumentDefinitions => {
         layout: 'lightHorizontalLines',
         table: {
           headerRows: 1,
-          widths: ['*', '*', '*', '*'],
+          widths: [50, 50, 50, '*', 'auto', '*'],
           body: [
-            ['Country', 'Capital', 'Population', 'Area'],
-            ['USA', 'Washington D.C.', '331M', '9.8M km²'],
-            [{ text: 'Canada', bold: true }, 'Ottawa', '38M', '9.9M km²'],
+            ['ID', 'ISO2', 'ISO3', 'Name', 'Continent', 'Local Name'],
+            [
+              ...countries.map((country) => [
+                country.id.toString(),
+                country.iso2,
+                country.iso3,
+                country.name,
+                country.continent,
+                country.local_name,
+              ]),
+            ],
           ],
         },
       },
